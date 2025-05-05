@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  back-end:
+    build: ./back-end
+    container_name: softy-pinko-back-end
+    restart: always
+    networks:
+      - softy-pinko-network
+
+  front-end:
+    build: ./front-end
+    container_name: softy-pinko-front-end
+    depends_on:
+      - back-end
+    restart: always
+    networks:
+      - softy-pinko-network
+
+  proxy:
+    build: ./proxy
+    image: softy-pinko-proxy:latest
+    container_name: softy-pinko-proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - front-end
+      - back-end
+    restart: always
+    networks:
+      - softy-pinko-network
+
+networks:
+  softy-pinko-network:
+    driver: bridge
